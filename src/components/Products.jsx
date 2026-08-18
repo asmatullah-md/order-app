@@ -48,7 +48,7 @@ function Products() {
           onChange={(e) => setPrice(e.target.value)}
         />
 
-        <button className="AddProduct" type="button" class="btn btn-success">Add</button>
+        <button className="AddProduct" type="submit">Add</button>
       </form>
 
       <table>

@@ -43,7 +43,7 @@ function App() {
       <main>
         {page === "dashboard" && <Dashboard />}
         {page === "products" && <Products />}
-        {page === "create-order" && <TakeOrder />}
+        {page === "Take-order" && <TakeOrder />}
         {page === "orders" && <Orders />}
       </main>
     </div>

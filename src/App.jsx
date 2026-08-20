@@ -19,10 +19,6 @@ function App() {
       <nav>
         <h1>Order Management</h1>
 
-        <button className="navBar" onClick={() => setPage("dashboard")}>
-          Dashboard
-        </button>
-
         <button className="navBar" onClick={() => setPage("products")}>
           Products
         </button>
@@ -35,10 +31,15 @@ function App() {
           Orders
         </button>
 
-        <button className="navBar" onClick={() => setLoggedIn(false)}>
+        <button className="navBar" onClick={() => setPage("dashboard")}>
+          Dashboard
+        </button>
+
+        <button className="logout" onClick={() => setLoggedIn(false)}>
           Logout
         </button>
       </nav>
+      
 
       <main>
         {page === "dashboard" && <Dashboard />}

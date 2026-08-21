@@ -4,13 +4,32 @@ function Login({ onLogin }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
 
-    if (email === "asmat@gmail.com" && password === "1234") {
-      onLogin();
-    } else {
-      alert("Invalid email or password");
+    try {
+      const response = await fetch("http://localhost:5001/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("Login successful");
+        onLogin();
+      } else {
+        alert(data.error);
+      }
+    } catch (error) {
+      console.log("Login error:", error);
+      alert("Unable to connect to server");
     }
   };
 

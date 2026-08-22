@@ -1,18 +1,25 @@
+import { useState, useEffect } from "react";
+
 function Orders() {
-  const orders = [
-    {
-      id: 101,
-      product: "Laptop",
-      quantity: 2,
-      total: 100000
-    },
-    {
-      id: 102,
-      product: "Mouse",
-      quantity: 3,
-      total: 1500
-    }
-  ];
+  const [orders, setOrders] = useState([]);
+
+  // Fetch orders from backend
+  useEffect(() => {
+    fetch("http://localhost:5001/api/orders")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to fetch orders");
+        }
+
+        return response.json();
+      })
+      .then((data) => {
+        setOrders(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching orders:", error);
+      });
+  }, []);
 
   return (
     <div>

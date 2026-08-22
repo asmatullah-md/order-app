@@ -114,6 +114,112 @@ app.post("/api/login", (req, res) => {
   });
 });
 
+// Create a new order
+app.post("/api/orders", (req, res) => {
+  const { product_id, quantity } = req.body;
+
+  if (!product_id || !quantity || quantity < 1) {
+    return res.status(400).json({
+      error: "Product and quantity are required"
+    });
+  }
+
+  // First get product price from MySQL
+  db.query(
+    "SELECT * FROM products WHERE id = ?",
+    [product_id],
+    (err, products) => {
+      if (err) {
+        console.log("Error fetching product:", err);
+        return res.status(500).json({
+          error: "Database error"
+        });
+      }
+
+      if (products.length === 0) {
+        return res.status(404).json({
+          error: "Product not found"
+        });
+      }
+
+      const product = products[0];
+      const total = Number(product.price) * Number(quantity);
+
+      // Create order
+      db.query(
+        "INSERT INTO orders (total) VALUES (?)",
+        [total],
+        (err, orderResult) => {
+          if (err) {
+            console.log("Error creating order:", err);
+            return res.status(500).json({
+              error: "Database error"
+            });
+          }
+
+          const orderId = orderResult.insertId;
+
+          // Add product to order_items
+          db.query(
+            `INSERT INTO order_items
+            (order_id, product_id, quantity, price)
+            VALUES (?, ?, ?, ?)`,
+            [orderId, product_id, quantity, product.price],
+            (err) => {
+              if (err) {
+                console.log("Error creating order item:", err);
+                return res.status(500).json({
+                  error: "Database error"
+                });
+              }
+
+              res.status(201).json({
+                message: "Order placed successfully",
+                order_id: orderId,
+                product: product.name,
+                quantity: quantity,
+                total: total
+              });
+            }
+          );
+        }
+      );
+    }
+  );
+});
+
+
+// Get all orders
+app.get("/api/orders", (req, res) => {
+  const sql = `
+    SELECT
+      orders.id,
+      orders.order_date,
+      order_items.product_id,
+      products.name AS product,
+      order_items.quantity,
+      order_items.price,
+      orders.total
+    FROM orders
+    JOIN order_items
+      ON orders.id = order_items.order_id
+    JOIN products
+      ON order_items.product_id = products.id
+    ORDER BY orders.id DESC
+  `;
+
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.log("Error fetching orders:", err);
+      return res.status(500).json({
+        error: "Database error"
+      });
+    }
+
+    res.json(results);
+  });
+});
+
 app.listen(5001, () => {
   console.log("Server running on http://localhost:5001");
 });

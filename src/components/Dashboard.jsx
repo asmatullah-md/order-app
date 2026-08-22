@@ -1,7 +1,50 @@
+import { useState, useEffect } from "react";
+
 function Dashboard() {
-  const totalOrders = 1;
-  const totalProducts = 2;
-  const totalRevenue = 50500;
+  const [totalProducts, setTotalProducts] = useState(0);
+  const [totalOrders, setTotalOrders] = useState(0);
+  const [totalRevenue, setTotalRevenue] = useState(0);
+
+  useEffect(() => {
+    // Get products
+    fetch("http://localhost:5001/api/products")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to fetch products");
+        }
+
+        return response.json();
+      })
+      .then((data) => {
+        setTotalProducts(data.length);
+      })
+      .catch((error) => {
+        console.error("Error fetching products:", error);
+      });
+
+    // Get orders
+    fetch("http://localhost:5001/api/orders")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to fetch orders");
+        }
+
+        return response.json();
+      })
+      .then((data) => {
+        setTotalOrders(data.length);
+
+        const revenue = data.reduce(
+          (sum, order) => sum + Number(order.total),
+          0
+        );
+
+        setTotalRevenue(revenue);
+      })
+      .catch((error) => {
+        console.error("Error fetching orders:", error);
+      });
+  }, []);
 
   return (
     <div>
@@ -14,7 +57,6 @@ function Dashboard() {
 
         <div className="card">
           <h3>Total Orders: {totalOrders}</h3>
-          <p></p>
         </div>
 
         <div className="card">

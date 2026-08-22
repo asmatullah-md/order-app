@@ -39,9 +39,9 @@ A simple full-stack web application for managing products and customer orders.
 
 ```text
 product-order-app/
-|---screenshort/
-|   |-- order-management.png
-|   |__ products.png
+│
+├── screenshot/
+│   └── Products.png
 │
 ├── backend/
 │   ├── server.js

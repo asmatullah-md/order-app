@@ -39,6 +39,59 @@ app.get("/api/products", (req, res) => {
   });
 });
 
+app.post("/api/products", (req, res) => {
+  const { name, price } = req.body;
+
+  if (!name || !price) {
+    return res.status(400).json({
+      error: "Product name and price are required"
+    });
+  }
+
+  const sql =
+    "INSERT INTO products (name, price) VALUES (?, ?)";
+
+  db.query(sql, [name, price], (err, result) => {
+    if (err) {
+      console.log("Error adding product:", err);
+      return res.status(500).json({
+        error: "Database error"
+      });
+    }
+
+    res.status(201).json({
+      id: result.insertId,
+      name: name,
+      price: price
+    });
+  });
+});
+
+app.delete("/api/products/:id", (req, res) => {
+  const { id } = req.params;
+
+  const sql = "DELETE FROM products WHERE id = ?";
+
+  db.query(sql, [id], (err, result) => {
+    if (err) {
+      console.log("Error deleting product:", err);
+      return res.status(500).json({
+        error: "Database error"
+      });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({
+        error: "Product not found"
+      });
+    }
+
+    res.json({
+      message: "Product deleted successfully"
+    });
+  });
+});
+
 app.post("/api/login", (req, res) => {
   const { email, password } = req.body;
 

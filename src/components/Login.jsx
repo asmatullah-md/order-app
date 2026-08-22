@@ -52,7 +52,9 @@ function Login({ onLogin }) {
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        <button className="log" type="submit">Login</button>
+        <button className="log" type="submit">
+          Login
+        </button>
       </form>
     </div>
   );

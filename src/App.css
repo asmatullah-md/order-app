@@ -66,3 +66,13 @@
 .logout:hover{
   background-color: #c1121f;
 }
+
+.delete{
+  background-color: #f22836;
+  border-radius: 5px;
+  margin: 3px;
+  min-width: 50px;
+  min-height: 20px;
+  border: none;
+  cursor: pointer;
+}
